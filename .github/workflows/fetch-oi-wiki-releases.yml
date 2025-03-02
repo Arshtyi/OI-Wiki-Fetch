@@ -33,7 +33,8 @@ jobs:
 
             - name: Add and commit PDFs
               run: |
-
+                  git config --global user.name 'github-actions'
+                  git config --global user.email 'github-actions@github.com'
                   git add PDFS
                   git commit -m "Update OI Wiki PDFs"
 
