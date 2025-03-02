@@ -2,7 +2,7 @@ name: Fetch OI Wiki Releases
 
 on:
     schedule:
-        - cron: "13 9 * * 0"
+        - cron: "45 9 * * 0"
 
 jobs:
     fetch-releases:
@@ -17,6 +17,12 @@ jobs:
                   sudo apt-get update
                   sudo apt-get install git-lfs
                   git lfs install
+
+            - name: Configure Git
+              run: |
+                  git config --global user.name 'github-actions'
+                  git config --global user.email 'github-actions@github.com'
+
             - name: Configure Git LFS for PDFs
               run: |
                   git lfs track "*.pdf"
@@ -25,21 +31,22 @@ jobs:
 
             - name: Clear old PDFs
               run: |
-                  rm -rf PDFS
-                  mkdir PDFS
+                  rm -rf PDFs
+                  mkdir PDFs
 
             - name: Fetch latest releases
               run: |
                   latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[0].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
                   second_latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[1].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
-                  curl -L $latest_release -o PDFS/OI-WIKI_By_Typst.pdf
-                  curl -L $second_latest_release -o PDFS/OI-WIKI_By_LaTeX.pdf
+                  curl -L $latest_release -o PDFs/OI-WIKI_By_Typst.pdf
+                  curl -L $second_latest_release -o PDFs/OI-WIKI_By_LaTeX.pdf
+
             - name: Add and commit PDFs
               run: |
-                  git config --global user.name 'github-actions'
-                  git config --global user.email 'github-actions@github.com'
-                  git add PDFS
+
+                  git add PDFs
                   git commit -m "Update OI Wiki PDFs"
+
             - name: Push changes
               run: |
                   git push origin main
