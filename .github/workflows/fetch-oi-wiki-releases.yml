@@ -13,11 +13,6 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Config Git
-              run: |
-                  git config --global user.name 'arshtyi'
-                  git config --global user.email '640006128@qq.com'
-
             - name: Get current date
               run:
                   echo "CURRENT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >>
@@ -29,8 +24,8 @@ jobs:
                   CURRENT_DATE: ${{ env.CURRENT_DATE }}
             - name: Commit and push changes
               run: |
-                  git config --global user.name 'github-actions[bot]'
-                  git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+                  git config --global user.name 'arshtyi'
+                  git config --global user.email '640006128@qq.com'
                   git add .
                   git commit -m "Add file with current date $CURRENT_DATE"
                   git push
