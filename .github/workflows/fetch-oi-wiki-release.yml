@@ -1,1 +1,22 @@
+name: Fetch OI Wiki Release
 
+on:
+    schedule:
+        - cron: "58 14 * * *" # Runs every day at 2:58 PM
+
+jobs:
+    fetch-release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Fetch OI Wiki Release
+              run: |
+                  curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases/latest \
+                  | grep "browser_download_url.*zip" \
+                  | grep -v "typst" \
+                  | cut -d : -f 2,3 \
+                  | tr -d \" \
+                  | wget -qi -
