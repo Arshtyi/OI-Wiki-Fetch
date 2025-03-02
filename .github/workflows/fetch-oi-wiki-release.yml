@@ -2,7 +2,7 @@ name: Fetch OI Wiki Release
 
 on:
     schedule:
-        - cron: "58 14 * * *" # Runs every day at 2:58 PM
+        - cron: "0 15 * * *" # Runs every day at 2:58 PM
 
 jobs:
     fetch-release:
@@ -18,5 +18,16 @@ jobs:
                   | grep "browser_download_url.*zip" \
                   | grep -v "typst" \
                   | cut -d : -f 2,3 \
+                  | xargs wget -O OI-Wiki-latest.zip
+
+            - name: Extract and store PDF
+              run: |
+                  unzip OI-Wiki-latest.zip '*.pdf' -d ./OI-Wiki-latest
+                  git lfs install
+                  git lfs track "*.pdf"
+                  mv ./OI-Wiki-latest/*.pdf ./
+                  git add *.pdf
+                  git commit -m "Add latest OI Wiki PDF"
+                  git push
                   | tr -d \" \
                   | wget -qi -
