@@ -13,19 +13,18 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Get current date
-              run:
-                  echo "CURRENT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >>
-                  $GITHUB_ENV
-
-            - name: Create a new file with current date
-              run: touch "${{ github.workspace }}/${{ env.CURRENT_DATE }}"
-              env:
-                  CURRENT_DATE: ${{ env.CURRENT_DATE }}
-            - name: Commit and push changes
+            - name: Create a file with current date
               run: |
-                  git config --global user.name 'arshtyi'
-                  git config --global user.email '640006128@qq.com'
+                  FILE_NAME=$(date +'%Y-%m-%d_%H-%M-%S')
+                  touch $FILE_NAME
+
+            - name: Commit and push the file
+              run: |
+                  git config --global user.name 'github-actions'
+                  git config --global user.email 'github-actions@github.com'
                   git add .
-                  git commit -m "Add file with current date $CURRENT_DATE"
+                  git commit -m "Add file with current date"
                   git push
+                  echo "File committed and pushed successfully."
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
