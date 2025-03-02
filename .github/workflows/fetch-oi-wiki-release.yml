@@ -2,7 +2,7 @@ name: Fetch OI Wiki Release
 
 on:
     schedule:
-        - cron: "0 15 * * *" # Runs every day at 2:58 PM
+        - cron: "4 15 * * *" # Runs every day at 3:04 PM
 
 jobs:
     fetch-release:
