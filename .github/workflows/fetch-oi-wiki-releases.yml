@@ -26,6 +26,8 @@ jobs:
               run: |
                   git config --global user.name 'arshtyi'
                   git config --global user.email '640006128@qq.com'
+                  git config --global --unset http.proxy
+                  git config --global --unset https.proxy
                   git add .
                   git commit -m "Add file with current date $CURRENT_DATE"
                   git push
