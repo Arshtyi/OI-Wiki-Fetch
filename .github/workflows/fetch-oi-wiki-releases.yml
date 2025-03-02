@@ -2,7 +2,7 @@ name: Fetch OI Wiki Releases
 
 on:
     schedule:
-        - cron: "15 9 * * 0"
+        - cron: "13 9 * * 0"
 
 jobs:
     fetch-releases:
