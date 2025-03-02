@@ -33,6 +33,7 @@ jobs:
 
             - name: Add and commit PDFs
               run: |
+
                   git add PDFS
                   git commit -m "Update OI Wiki PDFs"
 
