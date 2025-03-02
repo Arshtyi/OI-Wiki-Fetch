@@ -26,14 +26,14 @@ jobs:
 
             - name: Fetch latest releases
               run: |
-                  latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[0].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
-                  second_latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[1].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
-                  curl -L $latest_release -o PDFS/OI-WIKI(By\ Typst).pdf
-                  curl -L $second_latest_release -o PDFS/OI-WIKI(By\ LaTeX).pdf
-                  second_latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[1].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
-                  curl -L $latest_release -o PDFS/latest_release.pdf
-                  curl -L $second_latest_release -o PDFS/second_latest_release.pdf
+                  latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases/latest)
+                  second_latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[1]')
 
+                  latest_pdf_url=$(echo $latest_release | jq -r '.assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
+                  second_latest_pdf_url=$(echo $second_latest_release | jq -r '.assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
+
+                  curl -L $latest_pdf_url -o PDFS/OI-WIKI(By Typst).pdf
+                  curl -L $second_latest_pdf_url -o PDFS/OI-WIKI(By LaTeX).pdf
             - name: Add and commit PDFs
               run: |
                   git config --global user.name 'github-actions'
