@@ -1,30 +1,41 @@
-name: Fetch OI Wiki Release
+name: Fetch OI Wiki Releases
 
 on:
-    push:
-        branches:
-            - main
+    schedule:
+        - cron: "40 8 * * *" # Runs at 16:40 Beijing time (UTC+8)
 
 jobs:
-    fetch-release:
+    fetch-releases:
         runs-on: ubuntu-latest
 
         steps:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Create a file with current date
+            - name: Install Git LFS
               run: |
-                  FILE_NAME=$(date +'%Y-%m-%d_%H-%M-%S')
-                  touch $FILE_NAME
+                  sudo apt-get update
+                  sudo apt-get install git-lfs
+                  git lfs install
 
-            - name: Commit and push the file
+            - name: Clear old PDFs
               run: |
-                  git config --global user.name 'github-actions'
-                  git config --global user.email 'github-actions@github.com'
-                  git add .
-                  git commit -m "Add file with current date"
-                  git push
-                  echo "File committed and pushed successfully."
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  rm -rf PDFS
+                  mkdir PDFS
+
+            - name: Fetch latest releases
+              run: |
+                  latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[0].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
+                  second_latest_release=$(curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases | jq -r '.[1].assets[] | select(.name | endswith(".pdf")) | .browser_download_url')
+                  curl -L $latest_release -o PDFS/latest_release.pdf
+                  curl -L $second_latest_release -o PDFS/second_latest_release.pdf
+
+            - name: Add and commit PDFs
+              run: |
+                  git add PDFS
+                  git commit -m "Update OI Wiki PDFs"
+
+            - name: Push changes
+              uses: ad-m/github-push-action@v0.6.0
+              with:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
