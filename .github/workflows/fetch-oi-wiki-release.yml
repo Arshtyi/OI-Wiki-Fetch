@@ -2,7 +2,7 @@ name: Fetch OI Wiki Release
 
 on:
     schedule:
-        - cron: "10 15 * * *" # Runs every day at 3:04 PM
+        - cron: "17 15 * * *" # Runs every day at 3:04 PM
 
 jobs:
     fetch-release:
@@ -12,22 +12,10 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Fetch OI Wiki Release
-              run: |
-                  curl -s https://api.github.com/repos/OI-wiki/OI-Wiki-export/releases/latest \
-                  | grep "browser_download_url.*zip" \
-                  | grep -v "typst" \
-                  | cut -d : -f 2,3 \
-                  | xargs wget -O OI-Wiki-latest.zip
+            - name: Get current date
+              run:
+                  echo "CURRENT_DATE=$(date +'%Y-%m-%d_%H-%M-%S')" >>
+                  $GITHUB_ENV
 
-            - name: Extract and store PDF
-              run: |
-                  unzip OI-Wiki-latest.zip '*.pdf' -d ./OI-Wiki-latest
-                  git lfs install
-                  git lfs track "*.pdf"
-                  mv ./OI-Wiki-latest/*.pdf ./
-                  git add *.pdf
-                  git commit -m "Add latest OI Wiki PDF"
-                  git push
-                  | tr -d \" \
-                  | wget -qi -
+            - name: Create a new file with current date
+              run: touch "${{ github.workspace }}/$(date +'%Y-%m-%d_%H-%M-%S')"
