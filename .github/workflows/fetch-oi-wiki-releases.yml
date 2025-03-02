@@ -2,7 +2,7 @@ name: Fetch OI Wiki Releases
 
 on:
     schedule:
-        - cron: "40 8 * * *" # Runs at 16:40 Beijing time (UTC+8)
+        - cron: "30 8 * * *" # Runs at 16:40 Beijing time (UTC+8)
 
 jobs:
     fetch-releases:
